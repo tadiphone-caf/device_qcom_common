@@ -111,7 +111,22 @@ on property:vendor.setup.power=1
     write /sys/class/drm/card0/device/idle_timeout_ms 100
 
     chown system system /sys/class/devfreq/soc:qcom,l3-cdsp/userspace/set_freq
-	
+
+    # Setting b.L scheduler parameters
+    write /proc/sys/kernel/sched_upmigrate "95 95"
+    write /proc/sys/kernel/sched_downmigrate "85 85"
+    write /proc/sys/kernel/sched_group_upmigrate 100
+    write /proc/sys/kernel/sched_group_downmigrate 10
+    write /proc/sys/kernel/sched_walt_rotate_big_tasks 1
+
+    # Disable wsf, beacause we are using efk.
+    # wsf Range : 1..1000 So set to bare minimum value 1.
+    write /proc/sys/vm/watermark_scale_factor 1
+
+    write /sys/devices/system/cpu/cpu0/core_ctl/enable 0
+    write /sys/devices/system/cpu/cpu4/core_ctl/enable 0
+    write /sys/devices/system/cpu/cpu7/core_ctl/enable 0
+
 on property:sys.boot_completed=1
     setprop vendor.setup.power 1
 
